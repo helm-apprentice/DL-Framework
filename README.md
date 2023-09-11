@@ -1,3 +1,3 @@
 # DL-Framework
-labor and record\n
+labor and record
 nothing to have your attention
