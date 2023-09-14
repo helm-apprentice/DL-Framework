@@ -1,4 +1,4 @@
-is_simple_core = True
+is_simple_core = False
 
 if is_simple_core:
     from dl.core_simple import Variable
@@ -10,6 +10,6 @@ if is_simple_core:
     from dl.core_simple import setup_variable
 
 else:
-    pass
+    from dl.core import *
 
 setup_variable()
