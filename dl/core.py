@@ -129,7 +129,25 @@ class Function:
     
     def backward(self, gy):
         raise NotImplementedError()   
+
+
+class Square(Function):
+    def forward(self, x):
+        return x ** 2
     
+    def backward(self, gy): # 参数 gy 是一个 ndarry 实例，是从输出传播而来的导数
+        x = self.inputs[0].data
+        gx = 2 * x * gy
+        return gx
+
+class Exp(Function):
+    def forward(self, x):
+        return np.exp(x)
+    
+    def backward(self, gy):
+        x = self.inputs[0].data
+        gx = np.exp(x) * gy
+        return gx
 
 class Add(Function):
     def forward(self, x0, x1): # 参数是包含两个变量的列表
@@ -213,6 +231,12 @@ def as_variable(obj):
         return obj
     return Variable(obj)
 
+def square(x): # 简化
+    return Square()(x)
+
+def exp(x): # 简化
+    return Exp()(x)
+
 def add(x0, x1):
     x1 = as_array(x1)
     return Add()(x0, x1)
@@ -254,3 +278,10 @@ def setup_variable():
     Variable.__truediv__ = div
     Variable.__rtruediv__ = rdiv
     Variable.__pow__ = pow
+
+def numerical_diff(f, x, eps=1e-4):
+    x0 = Variable(x.data - eps)
+    x1 = Variable(x.data + eps)
+    y0 = f(x0)
+    y1 = f(x1)
+    return (y1.data - y0.data) / (2 * eps)
