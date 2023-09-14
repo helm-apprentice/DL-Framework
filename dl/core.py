@@ -26,6 +26,7 @@ class Variable:
         if self.grad is None:
             # self.grad = np.ones_like(self.data)
             self.grad = Variable(np.ones_like(self.data))
+            # 创建反向传播的计算图：在函数的backward方法中使用Variable实例代替ndarray实例进行计算，就会创建该计算的连接
             # x.grad 和 y.grad 均
 
         # funcs = [self.creator]
