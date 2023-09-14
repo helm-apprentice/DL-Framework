@@ -48,27 +48,34 @@ class Variable:
 
             # gys = [output.grad for output in f.outputs]
             gys = [output().grad for output in f.outputs] # output 被弱引用
-            gxs = f.backward(*gys)
-            if not isinstance(gxs, tuple):
-                gxs = (gxs,)
 
-            for x, gx in zip(f.inputs, gxs): # 这段代码的作用是将每个输入变量x和对应的梯度gx配对
-                # x.grad = gx
-                if x.grad is None:
-                    x.grad = gx # 这里id(x.grad)和id(gx)一致
-                    # print(id(x.grad), id(gx))
-                else:
-                    x.grad = x.grad + gx # 使用复制操作没有覆盖内存,ndarray实例对 复制 和 覆盖 有区分
-                    # print(id(x.grad), id(gx))
-                    '''
-                    叠加的操作是因为在对类似y = x + x 这样的函数求导时，需要求导数的和而不是覆盖
-                    '''
-                    
-                if x.creator is not None:
-                    add_func(x.creator) # 将前一个函数添加到列表中
-            if not retain_grad:
-                for y in f.outputs:
-                    y().grad = None # y 是弱引用  
+            with using_config('enable_backprop', create_graph):
+                '''
+                例如,在进行Mul类的反向传播时,其backward方法执行gy * x1的计算。因为*运算符被重载,所以代码Mul()(gy, x1)会被调用,
+                这会触发父类Function.__call__()被调用。Function.__call__方法会根据Config.enable_backprop的值来启用或禁用反向传播
+                '''
+                gxs = f.backward(*gys) # 主要的backward处理
+                if not isinstance(gxs, tuple):
+                    gxs = (gxs,)
+    
+                for x, gx in zip(f.inputs, gxs): # 这段代码的作用是将每个输入变量x和对应的梯度gx配对
+                    # x.grad = gx
+                    if x.grad is None:
+                        x.grad = gx # 这里id(x.grad)和id(gx)一致
+                        # print(id(x.grad), id(gx))
+                    else:
+                        x.grad = x.grad + gx # 这个计算也是对象
+                        # 使用复制操作没有覆盖内存,ndarray实例对 复制 和 覆盖 有区分
+                        # print(id(x.grad), id(gx))
+                        '''
+                        叠加的操作是因为在对类似y = x + x 这样的函数求导时，需要求导数的和而不是覆盖
+                        '''
+                        
+                    if x.creator is not None:
+                        add_func(x.creator) # 将前一个函数添加到列表中
+                if not retain_grad:
+                    for y in f.outputs:
+                        y().grad = None # y 是弱引用  
 
     def cleargrad(self):
         self.grad = None    
