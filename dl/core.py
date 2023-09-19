@@ -136,7 +136,7 @@ class Square(Function):
         return x ** 2
     
     def backward(self, gy): # 参数 gy 是一个 ndarry 实例，是从输出传播而来的导数
-        x = self.inputs[0].data
+        x, = self.inputs
         gx = 2 * x * gy
         return gx
 
@@ -145,7 +145,7 @@ class Exp(Function):
         return np.exp(x)
     
     def backward(self, gy):
-        x = self.inputs[0].data
+        x, = self.inputs
         gx = np.exp(x) * gy
         return gx
 
@@ -204,7 +204,7 @@ class Pow(Function):
         return y
     
     def backward(self, gy):
-        x = self.inputs
+        x, = self.inputs
         c = self.c
         gx = c * x ** (c - 1) * gy
         return gx
