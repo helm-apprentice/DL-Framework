@@ -7,4 +7,4 @@ y = F.reshape(x, (6, ))
 y.backward(retain_grad=True)
 print(x.grad)
 ## variable([[1 1 1]
-          [1 1 1]])
+##           [1 1 1]])
