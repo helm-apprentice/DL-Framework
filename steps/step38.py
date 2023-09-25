@@ -15,3 +15,26 @@ z.backward()
 print(x.grad)
 ## variable([[1 1 1]
 ##           [1 1 1]])
+
+x = np.random.rand(1, 2, 3)
+print(x)
+y = x.reshape((2, 3))
+print(y)
+y = x.reshape([2, 3])
+print(y)
+y = x.reshape(2, 3)
+print(y)
+
+x = Variable(np.random.randn(1, 2, 3))
+print(x)
+y = x.reshape((2, 3))
+print(y)
+y = x.reshape(2, 3)
+print(y)
+
+x = Variable(np.random.rand(2, 3))
+print(x)
+y = x.transpose()
+print(y)
+y = x.T
+print(y)
