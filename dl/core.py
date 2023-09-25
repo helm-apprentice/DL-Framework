@@ -86,6 +86,9 @@ class Variable:
             shape = shape[0]
         return dl.functions.reshape(self, shape)
 
+    def transpose(self):
+        return dl.functions.transpose(self)
+        
     @property
     def shape(self):
         return self.data.shape
@@ -101,7 +104,11 @@ class Variable:
     @property
     def dtype(self):
         return self.data.dtype
-    
+
+    @property
+    def T(self):
+        return dl.functions.transpose(self)
+        
     def __len__(self):
         return len(self.data)
         
