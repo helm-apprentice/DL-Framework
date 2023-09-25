@@ -1,6 +1,7 @@
 import numpy as np
 import weakref
 import contextlib
+import dl
 
 class Config:
     enable_backprop = True
@@ -79,6 +80,11 @@ class Variable:
 
     def cleargrad(self):
         self.grad = None    
+
+    def reshape(self, *shape):
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = shape[0]
+        return dl.functions.reshape(self, shape)
 
     @property
     def shape(self):
