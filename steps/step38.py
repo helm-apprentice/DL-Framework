@@ -8,3 +8,10 @@ y.backward(retain_grad=True)
 print(x.grad)
 ## variable([[1 1 1]
 ##           [1 1 1]])
+
+x.cleargrad()
+z = F.transpose(x)
+z.backward()
+print(x.grad)
+## variable([[1 1 1]
+##           [1 1 1]])
