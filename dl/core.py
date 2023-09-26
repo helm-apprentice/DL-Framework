@@ -88,6 +88,9 @@ class Variable:
 
     def transpose(self):
         return dl.functions.transpose(self)
+
+    def sum(self, axis = None, keepdims=False):
+        return dezero.functions.sum(self, axis, keepdims)
         
     @property
     def shape(self):
