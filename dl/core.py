@@ -167,23 +167,34 @@ class Exp(Function):
 
 class Add(Function):
     def forward(self, x0, x1): # 参数是包含两个变量的列表
+        self.x0_shape, self.x1_shape = x0.shape, x1.shape
         y = x0 + x1
         return y # 返回一个元组
     
     def backward(self, gy):
-        return gy, gy
+                gx0, gx1 = gy, gy
+        if self.x0_shape != self.x1_shape:
+            gx0 = dezero.functions.sum_to(gx0, self.x0_shape)
+            gx1 = dezero.functions.sum_to(gx1, self.x1_shape)
+        return gx0, gx1
     
 class Mul(Function):
     def forward(self, x0, x1):
+        self.x0_shape, self.x1_shape = x0.shape, x1.shape
         y = x0 * x1
         return y
 
     def backward(self, gy):
         # x0, x1 = self.inputs[0].data, self.inputs[1].data
         x0, x1 = self.inputs
-        # 这里gy和x1是Variable实例，已经在Variable类上实现了*运算符的重载，因此在执行gy*x1的背后，Mul类的正向传播会被调用。
-        # 此时，Function.__call__()会被调用，该方法中会构建计算图
-        return gy * x1, gy * x0
+        # 这里gy和x1是Variable实例,已经在Variable类上实现了*运算符的重载,因此在执行gy*x1的背后,Mul类的正向传播会被调用。
+        # 此时,Function.__call__()会被调用,该方法中会构建计算图
+        gx0 = gy * x1
+        gx1 = gy * x0
+        if self.x0_shape != self.x1_shape:
+            gx0 = dezero.functions.sum_to(gx0, self.x0_shape)
+            gx1 = dezero.functions.sum_to(gx1, self.x1_shape)
+        return gx0, gx1
     
 class Neg(Function):
     def forward(self, x):
@@ -194,21 +205,31 @@ class Neg(Function):
     
 class Sub(Function):
     def forward(self, x0, x1):
+        self.x0_shape, self.x1_shape = x0.shape, x1.shape
         y = x0 - x1
         return y
-    
+
     def backward(self, gy):
-        return gy, -gy
+        gx0 = gy
+        gx1 = -gy
+        if self.x0_shape != self.x1_shape:
+            gx0 = dezero.functions.sum_to(gx0, self.x0_shape)
+            gx1 = dezero.functions.sum_to(gx1, self.x1_shape)
+        return gx0, gx1
     
 class Div(Function):
     def forward(self, x0, x1):
+        self.x0_shape, self.x1_shape = x0.shape, x1.shape
         y = x0 / x1
         return y
-    
+
     def backward(self, gy):
         x0, x1 = self.inputs
         gx0 = gy / x1
         gx1 = gy * (-x0 / x1 ** 2)
+        if self.x0_shape != self.x1_shape:
+            gx0 = dezero.functions.sum_to(gx0, self.x0_shape)
+            gx1 = dezero.functions.sum_to(gx1, self.x1_shape)
         return gx0, gx1
     
 class Pow(Function):
