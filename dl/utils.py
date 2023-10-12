@@ -50,8 +50,8 @@ def plot_dot_graph(output, verbose=True, to_file='graph.png'):
     dot_graph = get_dot_graph(output, verbose)
 
     # 1.将dot数据保存至文件
-    tmp_dir = os.path.join(os.path.expanduser('~'), '.dezero')
-    if not os.path.exists(tmp_dir): # 如果～/.dezero目录不存在，就创建该目录
+    tmp_dir = os.path.join(os.path.expanduser('~'), '.dl')
+    if not os.path.exists(tmp_dir): # 如果～/.dl目录不存在，就创建该目录
         os.mkdir(tmp_dir)
     graph_path = os.path.join(tmp_dir, 'tmp_graph.dot')
 
@@ -84,16 +84,16 @@ def sum_to(x, shape):
     return y
 
 def reshape_sum_backward(gy, x_shape, axis, keepdims):
-    """Reshape gradient appropriately for dezero.functions.sum's backward.
+    """Reshape gradient appropriately for dl.functions.sum's backward.
 
     Args:
-        gy (dezero.Variable): Gradient variable from the output by backprop.
+        gy (dl.Variable): Gradient variable from the output by backprop.
         x_shape(tuple):Shape used at sum funxtion's forward.
         axis(None or int or tuple of ints): Axis used at sum function's forward.
         keepdims(bool):Keepdims used at sum function's forward.
 
     Returns:
-        dezero.Variable: Gradient variable which is reshaped appropriately.
+        dl.Variable: Gradient variable which is reshaped appropriately.
     """
     ndim = len(x_shape)
     tupled_axis = axis
