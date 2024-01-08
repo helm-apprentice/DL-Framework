@@ -149,6 +149,23 @@ def linear_simple(x, W, b=None):
     y = t + b
     t.data = None # 删除t的数据，整个反向传播的过程中都不需要变量t的数据
     return y
+
+class Linear(Function):
+    def forward(self, x, W, b):
+        y = x.dot(W)
+        if b is not None:
+            y += b
+        return y
+    
+    def backward(self, gy):
+        x, W, b = self.inputs
+        gb = None if b.data is None else sum_to(gy, b.shape)
+        gx = matmul(gy, W.T)
+        gW = matmul(x.T, gy)
+        return gx, gW, gb
+    
+def linear(x, W, b=None):
+    return Linear()(x, W, b)
 # =================================================================================================
 # loss function:
 # =================================================================================================
