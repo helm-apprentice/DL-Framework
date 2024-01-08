@@ -140,7 +140,9 @@ class MatMul(Function):
     
 def matmul(x, W):
     return MatMul()(x, W)
-
+# =================================================================================================
+# loss function:
+# =================================================================================================
 class MeanSquaredError(Function):
     def forward(self, x0, x1):
         diff = x0 - x1
