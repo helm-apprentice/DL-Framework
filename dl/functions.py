@@ -140,6 +140,15 @@ class MatMul(Function):
     
 def matmul(x, W):
     return MatMul()(x, W)
+
+def linear_simple(x, W, b=None):
+    t = matmul(x, W)
+    if b is None:
+        return t
+    
+    y = t + b
+    t.data = None # 删除t的数据，整个反向传播的过程中都不需要变量t的数据
+    return y
 # =================================================================================================
 # loss function:
 # =================================================================================================
