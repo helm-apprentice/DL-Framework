@@ -143,7 +143,14 @@ def matmul(x, W):
 # =================================================================================================
 # loss function:
 # =================================================================================================
-class MeanSquaredError(Function):
+def mean_squared_error_simple(x0, x1):
+    x0, x1 = as_variable(x0), as_variable(x1)
+    diff = x0 - x1
+    y = sum(diff ** 2) / len(diff)
+    return y
+
+class MeanSquaredError(Function): # 内存效率相比于_simple 效率更高，新的计算图中没有中间变量。中间的数据只用在MeanSquaredError类的forward方法中
+                                  # 准确来说，它们作为ndarray实例使用，一旦离开forward方法的作用范围，就马上从内存中被清除。
     def forward(self, x0, x1):
         diff = x0 - x1
         y = (diff ** 2).sum() / len(diff)
