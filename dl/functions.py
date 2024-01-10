@@ -191,3 +191,11 @@ class MeanSquaredError(Function): # 内存效率相比于_simple 效率更高，
     
 def mean_squared_error(x0, x1):
     return MeanSquaredError()(x0, x1)
+
+# =================================================================================================
+# activation function:
+# =================================================================================================
+def sigmoid_simple(x):
+    x = as_variable(x)
+    y = 1 / (1+exp(-x))
+    return y
