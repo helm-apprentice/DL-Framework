@@ -26,7 +26,7 @@ iters = 10000
 
 # 3.神经网络的训练
 for i in range(iters):
-    y_pred = predict(x)
+    y_pred = predict(x)  # 报错
     loss = F.mean_squared_error(y, y_pred)
     W1.cleargrad()
     b1.cleargrad()
