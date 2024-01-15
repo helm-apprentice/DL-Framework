@@ -27,3 +27,10 @@ class Layer: # 基类
 # # ------------
 # # p2 variable(2)
 # # p1 variable(1)
+        def __call__(self, *inputs):
+        outputs = self.forward(*inputs)
+        if not isinstance(outputs, tuple):
+            outputs = (outputs,)
+        self.inputs = [weakref.ref(x) for x in inputs]
+        self.outputs = [weakref.ref(f) for y in outputs]
+        return outputs if len(outputs) > 1 else outputs[0]
