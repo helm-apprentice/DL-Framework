@@ -121,7 +121,8 @@ class Variable:
         p = str(self.data).replace('\n', '\n' + ' ' * 9)
         return 'variable(' + p + ')'
 
-
+class Parameter:
+    pass
 class Function:
     def __call__(self, *inputs): # 参数前添加星号，这样在不使用列表的情况下调用具有任意个参数的函数
 
