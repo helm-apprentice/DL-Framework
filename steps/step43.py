@@ -12,7 +12,7 @@ I, H, O = 1, 10, 1
 W1 = Variable(0.01 * np.random.randn(I, H))
 b1 = Variable(np.zeros(H))
 W2 = Variable(0.01 * np.random.randn(H, O))
-b2 = Variable(np.zeros(0))
+b2 = Variable(np.zeros(O))
 
 # 2.神经网络的推理
 def predict(x):
